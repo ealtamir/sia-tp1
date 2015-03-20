@@ -17,8 +17,7 @@ class Block():
     def getMoves(self):
         params = (self.total, self.squares_num, self.board_size)
         if params not in Block.operationsMemo:
-            combinations = calculateCombinations(self.total, self.squares_num,
-                                                 self.board_size)
+            combinations = calculateCombinations(self.total, self.squares_num, self.board_size)
             Block.operationsMemo[params] = combinations
         else:
             combinations = Block.operationsMemo[params]
@@ -60,6 +59,5 @@ def calculateCombinations(total, squares, n):
     combinations = []
     for i in range(1, n + 1):
         if i < total:
-            combinations += calculateCombinationsHelper(i, total,
-                                                        squares, n, [i])
+            combinations += calculateCombinationsHelper(i, total, squares, n, [i])
     return combinations
