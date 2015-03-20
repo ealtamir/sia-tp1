@@ -25,9 +25,11 @@ class Block():
             combinations = Block.operationsMemo[params]
         return combinations
 
+
     @property
     def operation(self):
         return self.__operation
+
 
     @operation.setter
     def operation(self, value):
@@ -35,6 +37,7 @@ class Block():
             self.__operation = value
         else:
             raise InvalidBlockOperation()
+
 
 
 # 6 = 2 + 3 + 1, squares = 3, n = 20

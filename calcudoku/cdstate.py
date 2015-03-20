@@ -14,7 +14,7 @@ class CDState(State):
 
 
     def compare(self, state):
-        if self.board.satisfies(state) and self.board.satisfies(self):
+        if self.board.solvesGame(state) and self.board.solvesGame(self):
             return True
 
         if len(self.solutions) != len(state.solutions):
@@ -24,6 +24,7 @@ class CDState(State):
             return True
 
         return False
+
 
     def isGoal(self):
         return self.isSolution

@@ -10,6 +10,9 @@ class Problem():
 	def getGoalState(self):
 		raise NotImplementedError()
 
+	def isGoalState(self, state):
+		raise NotImplementedError()
+
 	def getRules(self):
 		raise NotImplementedError()
 

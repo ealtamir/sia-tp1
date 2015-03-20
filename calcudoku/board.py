@@ -5,6 +5,8 @@ from calcudoku.exceptions.game_exceptions import InvalidBlockShapeException, \
 
 BLOCK_ID = 0
 SOLUTION = 1
+BLOCK = 0
+POINTS = 1
 
 class Board():
 
@@ -30,13 +32,8 @@ class Board():
         raise NotImplementedError()
 
 
-    def satisfies(self, state):
+    def solvesGame(self, state):
         raise NotImplementedError()
-        if state.isGoal():
-            return True
-        else:
-            pass # TODO: Check that state satisfies all blocks
-        return False
 
 
     def haveSameSolutions(self, state1, state2):
@@ -56,6 +53,16 @@ class Board():
                 return False
         return True
 
+
+    def ruleIsApplicable(self, state, block_id, solution):
+        raise NotImplementedError()
+
+    def getBlockSolutions(self):
+        solutions = []
+        for id, block in self.blocks.items():
+            for move in block.getMoves():
+                solutions.append((id, move, self.blocks[id][POINTS]))
+        raise NotImplementedError()
 
     @classmethod
     def buildBoard(cls):
@@ -78,5 +85,4 @@ class Board():
             board.addBlock(block, points)
 
         return blocks
-
 

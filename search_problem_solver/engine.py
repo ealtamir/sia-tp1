@@ -12,6 +12,7 @@ class SearchProblemSolver():
         self._explored = []
         self._explosionCounter = 0
 
+
     def solve(self):
         root = Node(self._problem.getInitialState(), 0)
         self._frontier.append(root)
@@ -23,6 +24,7 @@ class SearchProblemSolver():
         elif failed:
             print("FAILED! solution not found!")
 
+
     def startExploration(self):
         failed = finished = False
 
@@ -33,6 +35,7 @@ class SearchProblemSolver():
                 finished = self.exploreFrontier()
 
         return failed, finished
+
 
     def exploreFrontier(self):
         finished = False
@@ -47,11 +50,13 @@ class SearchProblemSolver():
             self._explosionCounter += 1
         return finished
 
+
     def isGoal(self, node):
         state = node.getState()
         if state is not None:
-            return state.compare(self._problem.getGoalState())
+            return self._problem.isGoalState(state)
         return False
+
 
     def explode(self, node):
         if self._problem.getRules() is None:
@@ -70,6 +75,7 @@ class SearchProblemSolver():
                 newNode.setParent(node)
                 self.addNode(newNode)
 
+
     def checkBranch(self, parent, state):
         """
         Checks if the state of any of the ancestors is the same as the
@@ -83,11 +89,13 @@ class SearchProblemSolver():
         sameStateAsParent = state is not None and state.compare(parent.getState())
         return  sameStateAsAnAncestor or sameStateAsParent
 
+
     def checkFrontierAndExplored(self, cost, state):
         """
         Checks that the current node doesn't have the same state as an
         explored or unexplored node that has a lower cost.
         """
+        # TODO: Ver si combiene pasar esto a un hash
         nodeState = None
         for frontierNode in self._frontier:
             nodeState = frontierNode.getState()
@@ -98,6 +106,7 @@ class SearchProblemSolver():
             nodeState = exploredNode.getState()
             if nodeState.compare(state) and exploredNode.getCost() < cost:
                 return True
+
 
     def addNode(self, node):
         raise NotImplementedError("This method depends on the search strat.")

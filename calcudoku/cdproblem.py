@@ -7,15 +7,24 @@ class CDProblem(Problem):
 
     def __init__(self, n):
         self.board = Board(n)
+        self.goalState = None
+
 
     def getInitialState(self):
         return CDState(self.board)
 
+
     def getGoalState(self):
-        return CDState(self.board, (), isGoal=True)
+        if self.goalState == None:
+            self.goalState = CDState(self.board, isGoal=True)
+        return self.goalState
+
+    def isGoalState(self, state):
+        return self.board.solvesGame(state)
 
     def getRules(self):
         raise NotImplementedError()
+
 
     def getHValue(self, state):
         raise NotImplementedError()
