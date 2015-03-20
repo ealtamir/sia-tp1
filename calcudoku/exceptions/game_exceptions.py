@@ -8,5 +8,7 @@ class BlockOverlapException(Exception):
 class InvalidBlockOperation(Exception):
     pass
 
+class SolutionSizeError(Exception):
+    pass
 
 

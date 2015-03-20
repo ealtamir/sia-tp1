@@ -12,7 +12,7 @@ class CDProblem(Problem):
         return CDState(self.board)
 
     def getGoalState(self):
-        return CDState(self.board)
+        return CDState(self.board, (), isGoal=True)
 
     def getRules(self):
         raise NotImplementedError()

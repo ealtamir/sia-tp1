@@ -6,13 +6,14 @@ class Block():
     operationsMemo = {}
     block_id = 0
 
-    def __init__(self, squares_num, operation, total, n):
+    def __init__(self, id, squares_num, operation, total, n):
         self.squares_num = squares_num
         self.operation = operation
         self.total = total
         self.board_size = n
         self.id = Block.block_id
         Block.block_id += 1
+
 
     def getMoves(self):
         params = (self.total, self.squares_num, self.board_size)
