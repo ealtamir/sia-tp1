@@ -44,7 +44,7 @@ class SearchProblemSolver():
         self._explored.append(current_node)
         if self.is_goal(current_node):
             finished = True
-            print(current_node.getSolution())
+            print(current_node.get_solution())
             print("Expanded nodes: %d" % self._explosionCounter)
         else:
             self.explode(current_node)
@@ -125,4 +125,4 @@ class SearchProblemSolver():
         stratergies = {'BFS': self.BSF, 'DFS': self.DFS}
         stratergies.get(self._search_strategy)(node)
         #raise NotImplementedError("This method depends on the search strat.")
-
+        
