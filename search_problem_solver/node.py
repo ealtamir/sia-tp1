@@ -6,15 +6,13 @@ class Node():
         self.state = state
         self.cost = cost
 
-
     def __repr__(self):
         return "Node with state: %s" % self.state.__str__()
 
-
-    def getSolution(self):
+    def get_solution(self):
         if self.parent is None:
             return self.state.__str__()
-        return "%s\n%s" % self.parent.getSolution(), self.state
+        return "%s\n%s" % self.parent.get_solution(), self.state
 
     @property
     def parent(self):
