@@ -114,6 +114,15 @@ class SearchProblemSolver():
             if node_state.compare(state) and explored_node.getCost() < cost:
                 return True
 
+
+    def BSF(self, node):
+        self._frontier.append(node)
+
+    def DFS(self, node):
+        self._frontier.appendleft(node)
+
     def add_node(self, node):
-        raise NotImplementedError("This method depends on the search strat.")
+        stratergies = {'BFS': self.BSF, 'DFS': self.DFS}
+        stratergies.get(self._search_strategy)(node)
+        #raise NotImplementedError("This method depends on the search strat.")
 
