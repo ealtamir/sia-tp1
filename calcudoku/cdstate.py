@@ -9,7 +9,7 @@ class CDState(State):
     """
     Abstract subclass that only enforces a compare method between states.
     """
-    def __init__(self, board, solutions=tuple(),
+    def __init__(self, board, solutions=dict(),
                  taken_rows=None, taken_cols=None, isGoal=False):
         self.board = board
 
@@ -26,6 +26,15 @@ class CDState(State):
         self.taken_cols = taken_cols if taken_cols else create_taken_matrix(n)
 
 
+    def __str__(self):
+        s = "State: "
+        for key in self.solutions:
+            block_name = self.board.blocks[key].__str__()
+            solution = self.solutions[key]
+            s += "(%s, %s) - " % (block_name, str(solution))
+        return s
+
+
     @property
     def solutions(self):
         return self.__solutions
@@ -33,7 +42,7 @@ class CDState(State):
 
     @solutions.setter
     def solutions(self, value):
-        assert type(self) is type(dict())
+        assert(type(self) is type(dict()))
         self.__solutions = value
 
 
@@ -55,23 +64,23 @@ class CDState(State):
 
 
     def hasSameSolutionsAs(self, state):
-        if not self.haveSameSolutionSize(state):
-            raise SolutionSizeError()
+        assert(self.haveSameSolutionSize(state))
 
-        # TODO: Make this use a dictionary because if the solutions are in the wrong order, it fails.
-        for i in range(len(state.solutions)):
-            id1 = self.solutions[i][BLOCK_ID]
-            id2 = state.solutions[i][BLOCK_ID]
-            solution1 = self.solutions[i][SOLUTION]
-            solution2 = state.solutions[i][SOLUTION]
+        for key in self.solutions.iterkeys():
+            if key not in state.solutions:
+                return False
 
-            if id1 != id2 or solution1 != solution2:
+            solution1 = self.solutions[key][SOLUTION]
+            solution2 = state.solutions[key][SOLUTION]
+
+            if solution1 != solution2:
                 return False
         return True
 
 
     def create_next_state(self, board, block_id, solution):
-        new_solutions = self.solutions + (self.block_id, self.solution)
+        new_solutions = self.solutions.copy()
+        new_solutions[block_id] = solution
         new_taken_rows = self.refresh_row_occupied_matrix(board,
                                                           block_id, solution)
         new_taken_cols = self.refresh_col_occupied_matrix(board,

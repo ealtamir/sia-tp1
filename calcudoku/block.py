@@ -15,6 +15,10 @@ class Block():
         Block.block_id += 1
 
 
+    def __str__(self):
+        return "%d%s" % (self.total, self.__operation)
+
+
     def getMoves(self):
         params = (self.total, self.squares_num, self.board_size)
         if params not in Block.operationsMemo:
@@ -37,7 +41,6 @@ class Block():
             self.__operation = value
         else:
             raise InvalidBlockOperation()
-
 
 
 # 6 = 2 + 3 + 1, squares = 3, n = 20
