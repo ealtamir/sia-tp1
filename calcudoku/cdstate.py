@@ -5,9 +5,12 @@ class CDState(State):
     """
     Abstract subclass that only enforces a compare method between states.
     """
-    def __init__(self, board, solutions=tuple()):
+    def __init__(self, board, solutions=tuple(), isGoal=False):
         self.board = board
+
+        # [(block_id, (square1_val, square2_val...))]
         self.solutions = solutions
+        self.isSolution = isGoal
 
 
     def compare(self, state):
@@ -17,7 +20,13 @@ class CDState(State):
         if len(self.solutions) != len(state.solutions):
             return False
 
+        if self.board.haveSameSolution(self, state):
+            return True
 
+        return False
+
+    def isGoal(self):
+        return self.isSolution
 
 
 

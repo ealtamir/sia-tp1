@@ -1,21 +1,24 @@
 from calcudoku.block import Block
 from calcudoku.exceptions.game_exceptions import InvalidBlockShapeException, \
-    BlockOverlapException
+    BlockOverlapException, SolutionSizeError
 
+
+BLOCK_ID = 0
+SOLUTION = 1
 
 class Board():
 
     def __init__(self, n):
         self.board_size = n
-        self.blocks = []
-        self.board = [[ None for i in range(n)] for j in range(n)]
+        self.blocks = {}
+        self.board = [[None] * n] * n
 
 
     def addBlock(self, block, points):
         if self.pointsAreInvalid(points):
             raise InvalidBlockShapeException("All the squares in the block should be adjacent")
 
-        self.blocks.append(block)
+        self.blocks[block.id] = (block, points)
 
         for (x, y) in points:
             if self.board[x][y] is not None:
@@ -24,7 +27,34 @@ class Board():
 
 
     def pointsAreInvalid(self, points):
+        raise NotImplementedError()
+
+
+    def satisfies(self, state):
+        raise NotImplementedError()
+        if state.isGoal():
+            return True
+        else:
+            pass # TODO: Check that state satisfies all blocks
         return False
+
+
+    def haveSameSolutions(self, state1, state2):
+        len_sols1 = len(state1.solutions)
+        len_sols2 = len(state2.solutions)
+
+        if len_sols1 != len_sols2:
+            raise SolutionSizeError()
+
+        for i in range(len_sols1):
+            id1 = state1.solutions[i][BLOCK_ID]
+            id2 = state2.solutions[i][BLOCK_ID]
+            solution1 = state1.solutions[i][SOLUTION]
+            solution2 = state2.solutions[i][SOLUTION]
+
+            if id1 != id2 or solution1 != solution2:
+                return False
+        return True
 
 
     @classmethod
@@ -49,5 +79,4 @@ class Board():
 
         return blocks
 
-    def satisfies(self, state):
-        raise NotImplementedError()
+
