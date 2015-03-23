@@ -122,7 +122,6 @@ class SearchProblemSolver():
         self._frontier.appendleft(node)
 
     def add_node(self, node):
-        stratergies = {'BFS': self.BSF, 'DFS': self.DFS}
-        stratergies.get(self._search_strategy)(node)
-        #raise NotImplementedError("This method depends on the search strat.")
-        
+        strategies = {'BFS': self.BSF, 'DFS': self.DFS}
+        strategy_add = strategies[self._search_strategy]
+        strategy_add(node)

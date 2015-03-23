@@ -11,8 +11,8 @@ POINTS = 2
 
 class CDProblem(Problem):
 
-    def __init__(self, n):
-        self.board = Board(n)
+    def __init__(self, board):
+        self.board = board
         self.goalState = None
         self.rulesMemo = None
 

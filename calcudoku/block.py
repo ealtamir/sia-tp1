@@ -6,7 +6,7 @@ class Block():
     operationsMemo = {}
     block_id = 0
 
-    def __init__(self, id, squares_num, operation, total, n):
+    def __init__(self, squares_num, operation, total, n):
         self.squares_num = squares_num
         self.operation = operation
         self.total = total
