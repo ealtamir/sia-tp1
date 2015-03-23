@@ -10,3 +10,5 @@ def create_taken_matrix(n, init_matrix=None):
         init_vector = [0] * n
         matrix = [array(DEFAULT_ARRAY_TYPE, init_vector) for i in range(n)]
     return matrix
+
+
