@@ -31,7 +31,7 @@ class CDRule(Rule):
 
 
     def applyRule(self, state):
-        ruleIsApplicable = self.board.solutionIsValid(
+        ruleIsApplicable = self.board.ruleIsApplicable(
             state, self.block_id, self.solution)
         if not ruleIsApplicable:
             raise NotApplicableException()

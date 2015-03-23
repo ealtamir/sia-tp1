@@ -47,13 +47,10 @@ class CDState(State):
 
 
     def compare(self, state):
-        if self.board.solvesGame(state) and self.board.solvesGame(self):
-            return True
-
         if len(self._solutions) != len(state.solutions):
             return False
 
-        if self.board.haveSameSolution(self, state):
+        if self.board.haveSameSolutions(self, state):
             return True
 
         return False
@@ -122,3 +119,6 @@ class CDState(State):
             assert(new_matrix[solution[i]][points[i]] == (not OCCUPIED_VALUE))
             new_matrix[solution[i]][points[i]] = OCCUPIED_VALUE
         return new_matrix
+
+    def numberOfSolutions(self):
+        return len(self.solutions)

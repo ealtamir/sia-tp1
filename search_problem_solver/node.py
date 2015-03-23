@@ -16,21 +16,17 @@ class Node():
             return self.state.__str__()
         return "%s\n%s" % self.parent.getSolution(), self.state
 
-
     @property
     def parent(self):
         return self.__parent
-
 
     @parent.setter
     def parent(self, p):
         self.__parent = p
 
-
     @property
     def state(self):
         return self.__state
-
 
     @state.setter
     def state(self, value):
