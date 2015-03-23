@@ -2,6 +2,10 @@ from collections import deque
 from search_problem_solver.exceptions.engine_exceptions import *
 from search_problem_solver.node import Node
 
+
+ROOT_COST = 0
+
+
 class SearchProblemSolver():
 
 
@@ -14,7 +18,7 @@ class SearchProblemSolver():
 
 
     def solve(self):
-        root = Node(self._problem.getInitialState(), 0)
+        root = Node(self._problem.getInitialState(), ROOT_COST)
         self._frontier.append(root)
 
         failed, finished = self.startExploration()

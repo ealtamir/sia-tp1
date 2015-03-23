@@ -1,19 +1,15 @@
-from calcudoku.cdstate import CDState
 from calcudoku.exceptions.game_exceptions import InvalidSolutionException
+from calcudoku.utilities.constants import ROW, COL, DEFAULT_COST
 from search_problem_solver.exceptions.engine_exceptions import \
     NotApplicableException
 from search_problem_solver.rule import Rule
 
 
-# Coordinates of the board
-X = 0
-Y = 1
-
 class CDRule(Rule):
     """
     Abstract Rule class that must be completed with appropiate methods.
     """
-    def __init__(self, block_id, solution, points, board, cost=None):
+    def __init__(self, block_id, solution, points, board, cost=DEFAULT_COST):
         self.cost = cost
         self.block_id = block_id
         self.solution = solution
@@ -28,7 +24,7 @@ class CDRule(Rule):
     def __str__(self):
         s = "["
         for i in len(self.points):
-            s += "(%d, %d) = %d, " % (self.points[i][X], self.points[i][Y],
+            s += "(%d, %d) = %d, " % (self.points[i][ROW], self.points[i][COL],
                                       self.solution[i])
         s += "]"
         return s
@@ -40,6 +36,4 @@ class CDRule(Rule):
         if not ruleIsApplicable:
             raise NotApplicableException()
 
-        new_solutions = state.solutions + (self.block_id, self.solution)
-        new_state = CDState(self.board, new_solutions)
-        return new_state
+        return state.create_next_state(self.board, self.block_id, self.solution)
