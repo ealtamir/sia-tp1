@@ -1,82 +1,85 @@
 from calcudoku.block import Block
 from calcudoku.exceptions.game_exceptions import InvalidBlockShapeException, \
-    BlockOverlapException, SolutionSizeError
+    BlockOverlapException
+from calcudoku.utilities.constants import COL, POINTS, ROW
 
-
-BLOCK_ID = 0
-SOLUTION = 1
 
 class Board():
-
     def __init__(self, n):
         self.board_size = n
+
+        # Contains tuples of the form (block, block_points)
         self.blocks = {}
+
         self.board = [[None] * n] * n
+        self.blockNum = 0
 
 
     def addBlock(self, block, points):
         if self.pointsAreInvalid(points):
-            raise InvalidBlockShapeException("All the squares in the block should be adjacent")
+            msg = "All the squares in the block should be adjacent"
+            raise InvalidBlockShapeException(msg)
 
         self.blocks[block.id] = (block, points)
 
         for (x, y) in points:
             if self.board[x][y] is not None:
-                raise BlockOverlapException("Block overlap at (%d, %d)." % (x, y))
+                msg = "Block overlap at (%d, %d)." % (x, y)
+                raise BlockOverlapException(msg)
             self.board[x][y] = block
+        self.blockNum += 1
 
 
     def pointsAreInvalid(self, points):
         raise NotImplementedError()
 
 
-    def satisfies(self, state):
-        raise NotImplementedError()
-        if state.isGoal():
+    def solvesGame(self, state):
+        """
+        Game is solved when the number of solutions matches the number
+        of blocks. This works because no invalid solution will ever go
+        inside the solutions data structure.
+        """
+        if state.numberOfSolutions() == self.blockNum:
             return True
-        else:
-            pass # TODO: Check that state satisfies all blocks
         return False
 
 
     def haveSameSolutions(self, state1, state2):
-        len_sols1 = len(state1.solutions)
-        len_sols2 = len(state2.solutions)
+        return state1.hasSameSolutionsAs(state2)
 
-        if len_sols1 != len_sols2:
-            raise SolutionSizeError()
 
-        for i in range(len_sols1):
-            id1 = state1.solutions[i][BLOCK_ID]
-            id2 = state2.solutions[i][BLOCK_ID]
-            solution1 = state1.solutions[i][SOLUTION]
-            solution2 = state2.solutions[i][SOLUTION]
+    def ruleIsApplicable(self, state, block_id, solution):
+        """
+        This is one of the most important functions. It checks whether the
+        solution for the block of id, "block_id", is valid for the current state
+        of the board. It's critical that this functions executes swiftly.
+        """
+        block, points = self.blocks[block_id]
 
-            if id1 != id2 or solution1 != solution2:
+        assert(len(points) == len(solution))
+
+        for i in range(len(points)):
+            if self.cant_place_value_at_point(state, solution[i], points[i]):
                 return False
         return True
 
 
-    @classmethod
-    def buildBoard(cls):
-        n = 4
-        board = Board(n)
-        # http://www.conceptispuzzles.com/index.aspx?uri=puzzle/euid/010000002a6e5cbaa22408b0fa6312c6db4a88d62fc9f2953642b5523645754c48602f610e4c2ebd5db5f5de7b35b1720896f2dd/play
-        blocks = (
-            (Block(2, '+', 5, n), ((0, 0), (0, 1))),
-            (Block(2, '+', 7, n), ((1, 0), (2, 0))),
-            (Block(2, '/', 2, n), ((1, 1), (2, 1))),
-            (Block(2, '*', 8, n), ((1, 2), (2, 2))),
-            (Block(2, '/', 4, n), ((3, 0), (3, 1))),
-            (Block(2, '%', 3, n), ((3, 2),)),
-            (Block(2, '+', 3, n), ((2, 3), (3, 3))),
-            (Block(2, '%', 3, n), ((3, 2),)),
-            (Block(2, '-', 3, n), ((0, 2), (0, 3))),
-        )
+    def cant_place_value_at_point(self, state, solution, point):
+        row_occupied = state.is_row_occupied(solution, point[ROW])
+        if row_occupied:
+            return True
 
-        for block, points in blocks:
-            board.addBlock(block, points)
+        col_occupied = state.is_col_occupied(solution, point[COL])
+        if col_occupied:
+            return True
+        return False
 
-        return blocks
 
+    def getBlockSolutions(self):
+        solutions = []
+        for id, block in self.blocks.items():
+            for move in block.getMoves():
+                solutions.append((id, move, self.blocks[id][POINTS]))
+        return solutions
 
