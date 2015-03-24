@@ -9,7 +9,8 @@ COL = 1
 # Used to build the state occupied matrices
 DEFAULT_ARRAY_TYPE = 'B' #unsigned char
 # Value taken places in the matrix that signal occupied spots
-OCCUPIED_VALUE = 1
+OCCUPIED = 1
+NOT_OCCUPIED = 0
 
 # Structure of the blocks hash values in Board
 BLOCK = 0

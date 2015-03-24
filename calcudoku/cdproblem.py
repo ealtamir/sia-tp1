@@ -1,4 +1,3 @@
-from calcudoku.board import Board
 from calcudoku.cdrule import CDRule
 from calcudoku.cdstate import CDState
 from search_problem_solver.problem import Problem
@@ -27,17 +26,22 @@ class CDProblem(Problem):
     def isGoalState(self, state):
         return self.board.solvesGame(state)
 
-    def getRules(self):
+    def getRules(self, state=None):
         if self.rulesMemo is None:
-            self.rulesMemo = []
-            # solution : (block_id, (move1, move2, ...),
-            #  ((p1a, p1b), (p2a, ...))
-            solutions = self.board.getBlockSolutions()
-            for solution in solutions:
-                rule = CDRule(solution[BLOCK_ID], solution[MOVE],
-                              solution[POINTS], self.board)
-                self.rulesMemo.append(rule)
+            self.rulesMemo = self.init_rules()
         return self.rulesMemo
 
     def getHValue(self, state):
         raise NotImplementedError()
+
+    def init_rules(self):
+        rules = []
+        # solution : (block_id, (move1, move2, ...),
+        #  ((p1a, p1b), (p2a, ...))
+        solutions = self.board.getBlockSolutions()
+        for solution in solutions:
+            rule = CDRule(solution[BLOCK_ID], tuple(solution[MOVE]),
+                          solution[POINTS], self.board)
+            rules.append(rule)
+        return rules
+

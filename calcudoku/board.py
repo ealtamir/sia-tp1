@@ -1,7 +1,8 @@
+from operator import itemgetter
 from calcudoku.block import Block
 from calcudoku.exceptions.game_exceptions import InvalidBlockShapeException, \
     BlockOverlapException
-from calcudoku.utilities.constants import COL, POINTS, ROW
+from calcudoku.utilities.constants import COL, POINTS, ROW, BLOCK_ID
 
 
 class Board():
@@ -11,9 +12,8 @@ class Board():
         # Contains tuples of the form (block, block_points)
         self.blocks = {}
 
-        self.board = [[None] * n] * n
+        self.board = [[ None for i in range(n)] for j in range(n)]
         self.blockNum = 0
-
 
     def addBlock(self, block, points):
         if self.pointsAreInvalid(points):
@@ -29,10 +29,10 @@ class Board():
             self.board[x][y] = block
         self.blockNum += 1
 
-
     def pointsAreInvalid(self, points):
-        raise NotImplementedError()
-
+        # TODO: Chequesr que todos los puntos sean adyacentes
+        # raise NotImplementedError()
+        return False
 
     def solvesGame(self, state):
         """
@@ -44,10 +44,8 @@ class Board():
             return True
         return False
 
-
     def haveSameSolutions(self, state1, state2):
         return state1.hasSameSolutionsAs(state2)
-
 
     def ruleIsApplicable(self, state, block_id, solution):
         """
@@ -55,15 +53,38 @@ class Board():
         solution for the block of id, "block_id", is valid for the current state
         of the board. It's critical that this functions executes swiftly.
         """
+        if state.already_solved(block_id):
+            return False
+
         block, points = self.blocks[block_id]
 
         assert(len(points) == len(solution))
 
+        colliding_solutions = self.check_for_colliding_solutions(solution,
+                                                                 points)
+        if colliding_solutions:
+            return False
+
+        unoccupied = self.check_occupancy_matrices(state, solution, points)
+        return unoccupied
+
+    def check_occupancy_matrices(self, state, solution, points):
         for i in range(len(points)):
             if self.cant_place_value_at_point(state, solution[i], points[i]):
                 return False
         return True
 
+    def check_for_colliding_solutions(self, solution, points):
+        sol_len = len(solution)
+        pairs = ( (i, j) for i in range(sol_len)
+                 for j in range(sol_len) if i > j )
+        for i, j in pairs:
+            if solution[i] == solution[j]:
+                row_collision = points[i][ROW] == points[j][ROW]
+                col_collision = points[i][COL] == points[j][COL]
+                if row_collision or col_collision:
+                    return True
+        return False
 
     def cant_place_value_at_point(self, state, solution, point):
         row_occupied = state.is_row_occupied(solution, point[ROW])
@@ -75,11 +96,10 @@ class Board():
             return True
         return False
 
-
     def getBlockSolutions(self):
         solutions = []
-        for id, block in self.blocks.items():
+        for block, points in self.blocks.itervalues():
             for move in block.getMoves():
-                solutions.append((id, move, self.blocks[id][POINTS]))
+                solutions.append((block.id, move, self.blocks[block.id][POINTS]))
+        solutions.sort(key=itemgetter(BLOCK_ID))
         return solutions
-

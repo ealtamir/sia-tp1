@@ -1,6 +1,6 @@
 def calculate_combinations(op, total, squares, n):
     if squares == 1:
-        return [total]
+        return [[total]]
 
     combinations = []
     for i in range(1, n + 1):
@@ -64,5 +64,6 @@ operation = {
 }
 
 if __name__ == '__main__':
-    print(calculate_combinations('+', 3, 2, 5))
-    print(calculate_combinations('+', 16, 3, 12))
+    # print(calculate_combinations('+', 3, 2, 5))
+    # print(calculate_combinations('+', 16, 3, 12))
+    print(calculate_combinations('+', 4, 1, 5))

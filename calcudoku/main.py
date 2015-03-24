@@ -1,5 +1,5 @@
 from calcudoku.cdproblem import CDProblem
-from calcudoku.examples.fourByFourTetraOpBoard import buildBoard
+from calcudoku.examples.fourByFourSumBoard import buildBoard
 from search_problem_solver.engine import SearchProblemSolver
 
 

@@ -9,6 +9,9 @@ class Node():
     def __repr__(self):
         return "Node with state: %s" % self.state.__str__()
 
+    def __hash__(self):
+        return self.state.__hash__()
+
     def get_solution(self):
         if self.parent is None:
             return self.state.__str__()
