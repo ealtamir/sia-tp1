@@ -1,0 +1,6 @@
+test_identifier = 4v4,+
+cpu_time = 16.672681
+expanded_node = 15552
+frontier_size = 50
+test_name = four_by_four_sum_board
+explored_size = 15553

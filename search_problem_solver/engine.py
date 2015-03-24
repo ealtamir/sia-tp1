@@ -32,6 +32,11 @@ class SearchProblemSolver():
         elif failed:
             print("Exploded: %d" % self._explosionCounter)
             print("FAILED! solution not found!")
+        return {
+            'expanded_node' : self._explosionCounter,
+            'frontier_size' : len(self._frontier),
+            'explored_size' : len(self._explored)
+        }
 
     def start_exploration(self):
         failed = finished = False
@@ -57,7 +62,6 @@ class SearchProblemSolver():
             self._explosionCounter += 1
             if self._explosionCounter % 1000 == 0:
                 print("Explosion counter reached %d..." % self._explosionCounter)
-                print(current_node)
         return finished
 
     def is_goal(self, node):
@@ -107,7 +111,6 @@ class SearchProblemSolver():
         Checks that the current node doesn't have the same state as an
         explored or unexplored node that has a lower cost.
         """
-        # TODO: Ver si combiene pasar esto a un hash
         if state in self._frontier_hash and self._frontier_hash[state].cost < cost:
             return True
         if state in self._explored_hash and self._explored_hash[state].cost < cost:

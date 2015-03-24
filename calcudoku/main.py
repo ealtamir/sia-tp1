@@ -1,14 +1,19 @@
+import time
+
 from calcudoku.cdproblem import CDProblem
-from calcudoku.examples.fourByFourSumBoard import buildBoard
+from calcudoku.examples.fourByFourSumBoard import FourByFourSumBoard
+from calcudoku.utilities.utils import timed
 from search_problem_solver.engine import SearchProblemSolver
 
 
-def main():
-    board = buildBoard()
-    problem = CDProblem(board)
-    engine = SearchProblemSolver(problem, 'BFS')
-    engine.solve()
 
+@timed
+def main():
+    board_problem = FourByFourSumBoard()
+    board = board_problem.buildBoard()
+    problem = CDProblem(board)
+    engine = SearchProblemSolver(problem, 'DFS')
+    return engine.solve(), board_problem
 
 if __name__ == '__main__':
     main()

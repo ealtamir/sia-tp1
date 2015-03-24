@@ -101,5 +101,4 @@ class Board():
         for block, points in self.blocks.itervalues():
             for move in block.getMoves():
                 solutions.append((block.id, move, self.blocks[block.id][POINTS]))
-        solutions.sort(key=itemgetter(BLOCK_ID))
         return solutions

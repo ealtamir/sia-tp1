@@ -1,6 +1,7 @@
 from calcudoku.block import Block
 from calcudoku.board import Board
 
+BOARD_NAME = '4v4,+-*%'
 
 def buildBoard():
     n = 4
