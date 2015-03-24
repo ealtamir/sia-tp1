@@ -62,5 +62,5 @@ operation = {
 }
 
 if __name__ == '__main__':
-    print(calculate_combinations('/', 4, 2, 12))
+    print(calculate_combinations('*', 8, 2, 12))
     print(calculate_combinations('+', 16, 3, 12))

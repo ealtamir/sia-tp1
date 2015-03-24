@@ -3,7 +3,6 @@ from calcudoku.cdrule import CDRule
 from calcudoku.cdstate import CDState
 from search_problem_solver.problem import Problem
 
-
 BLOCK_ID = 0
 MOVE = 1
 POINTS = 2

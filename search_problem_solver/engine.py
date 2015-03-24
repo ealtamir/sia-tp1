@@ -2,6 +2,7 @@
 from collections import deque
 from search_problem_solver.exceptions.engine_exceptions import *
 from search_problem_solver.node import Node
+from calcudoku.utilities.priorityqueue import *
 
 
 ROOT_COST = 0
@@ -11,10 +12,16 @@ class SearchProblemSolver():
 
     def __init__(self, problem, search_strategy):
         self._problem = problem
-        self._search_strategy = search_strategy
-        self._frontier = deque()
+        self._search_strategy = None  # initialized in the method below
+        self.set_search_strategy(self, search_strategy)
         self._explored = []
         self._explosionCounter = 0
+        if search_strategy == 'Astar' or search_strategy == 'Greedy':
+            self._frontier = PriorityQueue()
+            self._popfunction = pqpop
+        else:
+            self._frontier = deque()
+            self._popfunction = pop
 
     def solve(self):
         root = Node(self._problem.getInitialState(), ROOT_COST)
@@ -40,7 +47,7 @@ class SearchProblemSolver():
 
     def explore_frontier(self):
         finished = False
-        current_node = self._frontier.popleft()
+        current_node = self._popfunction()
         self._explored.append(current_node)
         if self.is_goal(current_node):
             finished = True
@@ -72,10 +79,8 @@ class SearchProblemSolver():
                 self.add_to_frontier(node, new_state, rule)
 
     def validate_node(self, node, new_state):
-        state_is_not_replicated = self.check_branch(node.getParent(),
-                                                    new_state)
-        no_better_option_found = self.check_frontier_and_explored(
-            node.getCost(), new_state)
+        state_is_not_replicated = self.check_branch(node.getParent(), new_state)
+        no_better_option_found = self.check_frontier_and_explored(node.getCost(), new_state)
         return state_is_not_replicated and no_better_option_found
 
     def add_to_frontier(self, node, new_state, rule):
@@ -114,15 +119,50 @@ class SearchProblemSolver():
             if node_state.compare(state) and explored_node.getCost() < cost:
                 return True
 
-
-    def BSF(self, node):
+    def bsf(self, node):
         self._frontier.append(node)
 
-    def DFS(self, node):
+    def dfs(self, node):
         self._frontier.appendleft(node)
 
+    def a_star(self, node):
+        self._frontier.pqpush(evaluation(node), node)
+
+    def greedy(self, node):
+        self._frontier.pqpush(heuristic(node), node)
+
     def add_node(self, node):
-        stratergies = {'BFS': self.BSF, 'DFS': self.DFS}
-        stratergies.get(self._search_strategy)(node)
-        #raise NotImplementedError("This method depends on the search strat.")
-        
+        self._search_strategy(node)
+
+    def set_search_strategy(self, search_strategy):
+        strategies = {
+            'BFS': self.bsf,
+            'DFS': self.dfs,
+            'A-star': self.a_star,
+            'Greedy': self.greedy
+        }
+        self._search_strategy = strategies.get(search_strategy)
+
+
+def h1(node):
+    raise NotImplementedError
+
+
+def h2(node):
+    raise NotImplementedError
+
+
+# TODO asignarle la que se pase por parametro al programa, no cablearla!
+heuristic = h1
+
+
+def evaluation(node):
+    return node.cost + heuristic(node)
+
+
+def pop(self):
+    return self._frontier.popleft()
+
+
+def pqpop(self):
+    return self._frontier.pqpop()
