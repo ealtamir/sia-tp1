@@ -1,10 +1,12 @@
 from calcudoku.cdproblem import CDProblem
 from calcudoku.examples.fourByFourSumBoard import FourByFourSumBoard
+from calcudoku.examples.fourByFourTetraOpBoard import FourByFourQuadOpBoard
 from calcudoku.utilities.utils import timed, get_problem_parameters
 from search_problem_solver.engine import SearchProblemSolver
 
 boards = {
-    'four_by_four_sum_board' : FourByFourSumBoard
+    'four_by_four_sum_board' : FourByFourSumBoard,
+    'four_by_four_quad_op_board' : FourByFourQuadOpBoard
 }
 
 

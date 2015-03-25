@@ -33,7 +33,7 @@ def get_problem_parameters():
         for i, arg in enumerate(sys.argv):
             if i == 0:
                 continue # script name
-            if not (arg.isalpha() and len(arg) < 20):
+            if not len(arg) < 50:
                 msg = "Command argument %s with number" \
                       " %d is invalid" % (str(arg), i)
                 raise InvalidCommandLineArgumentException(msg)
