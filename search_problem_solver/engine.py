@@ -1,29 +1,36 @@
 # -*- coding: utf-8 -*-
 from collections import deque
-from calcudoku.search_strategies.DFS import DFS
-from calcudoku.search_strategies.BFS import BSF
 from search_problem_solver.exceptions.engine_exceptions import *
 from search_problem_solver.node import Node
+from calcudoku.utilities.priorityqueue import *
+from calcudoku.search_strategies.astar import a_star
+from calcudoku.search_strategies.greedy import greedy
+from calcudoku.search_strategies.dfs import dfs
+from calcudoku.search_strategies.bfs import bfs
 
 
 ROOT_COST = 0
 
-STRATEGIES = {'BFS': BSF, 'DFS': DFS}
 
 class SearchProblemSolver():
-
     def __init__(self, problem, search_strategy):
         self._problem = problem
-        self._search_strategy = search_strategy
-        self._frontier = deque()
+        self._search_strategy = None  # initialized in the method below
+        self.set_search_strategy(search_strategy)
         self._frontier_hash = {}
         self._explored = []
         self._explored_hash = {}
         self._explosionCounter = 0
+        if search_strategy == 'A-star' or search_strategy == 'Greedy':
+            self._frontier = PriorityQueue()
+            self._pop_function = pqpop
+        else:
+            self._frontier = deque()
+            self._pop_function = pop
 
     def solve(self):
         root = Node(self._problem.getInitialState(), ROOT_COST)
-        self.append_node(root, self._frontier, self._frontier_hash)
+        append_node(root, self._frontier, self._frontier_hash)
 
         failed, finished = self.start_exploration()
 
@@ -33,9 +40,9 @@ class SearchProblemSolver():
             print("Exploded: %d" % self._explosionCounter)
             print("FAILED! solution not found!")
         return {
-            'expanded_node' : self._explosionCounter,
-            'frontier_size' : len(self._frontier),
-            'explored_size' : len(self._explored)
+            'expanded_node': self._explosionCounter,
+            'frontier_size': len(self._frontier),
+            'explored_size': len(self._explored)
         }
 
     def start_exploration(self):
@@ -52,7 +59,7 @@ class SearchProblemSolver():
     def explore_frontier(self):
         finished = False
         current_node = self.pop_node(self._frontier, self._frontier_hash)
-        self.append_node(current_node, self._explored, self._explored_hash)
+        append_node(current_node, self._explored, self._explored_hash)
         if self.is_goal(current_node):
             finished = True
             print(current_node.get_solution())
@@ -85,10 +92,8 @@ class SearchProblemSolver():
                 self.add_to_frontier(node, new_state, rule)
 
     def validate_node(self, node, new_state):
-        state_is_replicated = self.replicated_state_in_ancestor(node.parent,
-                                                    new_state)
-        better_option_found = self.better_node_in_frontier_or_explored(
-            node.cost, new_state)
+        state_is_replicated = self.replicated_state_in_ancestor(node.parent, new_state)
+        better_option_found = self.better_node_in_frontier_or_explored(node.cost, new_state)
         return not state_is_replicated and not better_option_found
 
     def replicated_state_in_ancestor(self, parent, state):
@@ -117,6 +122,9 @@ class SearchProblemSolver():
             return True
         return False
 
+    def add_node(self, node):
+        self._search_strategy(node, self._frontier)
+
     def add_to_frontier(self, node, new_state, rule):
         # TODO: Ver si conviene calcular el costo en una función
         new_node = Node(new_state, node.cost + rule.cost)
@@ -124,15 +132,29 @@ class SearchProblemSolver():
         self.add_node(new_node)
         self._frontier_hash[new_node] = new_node
 
-    def add_node(self, node):
-        strategy_add = STRATEGIES[self._search_strategy]
-        strategy_add(node, self._frontier)
-
-    def append_node(self, node, arr, hash):
-        arr.append(node)
-        hash[node] = node
-
-    def pop_node(self, arr, hash):
-        node = arr.popleft()
-        del hash[node]
+    def pop_node(self, arr, hash_table):
+        node = self._pop_function(arr)
+        del hash_table[node]
         return node
+
+    def set_search_strategy(self, search_strategy):
+        strategies = {
+            'BFS': bfs,
+            'DFS': dfs,
+            'A-star': a_star,
+            'Greedy': greedy
+        }
+        self._search_strategy = strategies.get(search_strategy)
+
+
+def pop(arr):
+    return arr.popleft()
+
+
+def pqpop(arr):
+    return arr.pqpop()
+
+
+def append_node(node, arr, hash_table):
+    arr.append(node)
+    hash_table[node] = node

@@ -1,3 +1,3 @@
 
-def BSF(node, frontier):
+def bfs(node, frontier):
     frontier.append(node)

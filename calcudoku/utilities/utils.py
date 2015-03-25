@@ -55,16 +55,16 @@ def create_taken_matrix(n, init_matrix=None):
 def save_results(results):
     data = '\n'.join(["%s = %s" % (key, str(val))
                       for key, val in results.iteritems()])
-    name = 'calcudoku/solutions/%s.txt' % results['test_name']
+    name = 'solutions/%s.txt' % results['test_name']
     with open(name, 'w') as f:
         f.write(data)
 
 
-def timed(F):
+def timed(f):
     def timed_func(*args, **kwargs):
         print("%s> Starting timed function" % ("=" * 30))
         start = time.clock()
-        results, board = F(*args, **kwargs)
+        results, board = f(*args, **kwargs)
         end = time.clock()
         print("=" * 60)
         print("CPU Time: %02f" % (end - start))

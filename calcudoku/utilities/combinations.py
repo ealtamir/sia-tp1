@@ -4,8 +4,7 @@ def calculate_combinations(op, total, squares, n):
 
     combinations = []
     for i in range(1, n + 1):
-        if i < total:
-            combinations += operation[op](total, squares, i, n, [i])
+        combinations += operation[op](total, squares, i, n, [i])
     return combinations
 
 
@@ -23,7 +22,10 @@ def calculate_subtractions(total, squares, v, n, checked):
 
 
 def calculate_divisions(total, squares, v, n, checked):
-    return calculate_helper(division, total, squares, v, n, checked)
+    for i in range(1, n + 1):
+        if float(v) / i == total:
+            return [[v, i], [i, v]]
+    return []
 
 
 def calculate_helper(op, total, squares, v, n, checked):
@@ -46,10 +48,6 @@ def product(a, b):
 
 def addition(a, b):
     return a + b
-
-
-def division(a, b):
-    return a / b
 
 
 def subtraction(a, b):

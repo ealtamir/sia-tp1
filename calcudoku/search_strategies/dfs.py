@@ -1,5 +1,5 @@
 
-def DFS(node, frontier):
+def dfs(node, frontier):
     frontier.appendleft(node)
 
 
