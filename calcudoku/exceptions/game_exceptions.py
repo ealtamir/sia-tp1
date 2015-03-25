@@ -16,3 +16,8 @@ class SolutionSizeError(Exception):
 
 class InvalidSolutionException(Exception):
     pass
+
+class InvalidCommandLineArgumentException(object):
+    pass
+
+

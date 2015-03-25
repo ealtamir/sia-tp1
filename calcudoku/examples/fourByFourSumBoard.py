@@ -32,5 +32,3 @@ class FourByFourSumBoard(CalcudokuBoard):
             board.addBlock(block, points)
 
         return board
-
-
