@@ -20,15 +20,13 @@ class CDRule(Rule):
             raise InvalidSolutionException("There must \
             be a solution for each point.")
 
-
-    def __str__(self):
-        s = "["
-        for i in len(self.points):
+    def __repr__(self):
+        s = "<"
+        for i in range(len(self.points)):
             s += "(%d, %d) = %d, " % (self.points[i][ROW], self.points[i][COL],
                                       self.solution[i])
-        s += "]"
+        s += ">"
         return s
-
 
     def applyRule(self, state):
         ruleIsApplicable = self.board.ruleIsApplicable(

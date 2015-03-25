@@ -3,6 +3,10 @@ from collections import deque
 from search_problem_solver.exceptions.engine_exceptions import *
 from search_problem_solver.node import Node
 from calcudoku.utilities.priorityqueue import *
+from calcudoku.search_strategies.astar import a_star
+from calcudoku.search_strategies.greedy import greedy
+from calcudoku.search_strategies.dfs import dfs
+from calcudoku.search_strategies.bfs import bfs
 
 
 ROOT_COST = 0
@@ -12,26 +16,34 @@ class SearchProblemSolver():
     def __init__(self, problem, search_strategy):
         self._problem = problem
         self._search_strategy = None  # initialized in the method below
-        self.set_search_strategy(self, search_strategy)
+        self.set_search_strategy(search_strategy)
+        self._frontier_hash = {}
         self._explored = []
+        self._explored_hash = {}
         self._explosionCounter = 0
-        if search_strategy == 'Astar' or search_strategy == 'Greedy':
+        if search_strategy == 'A-star' or search_strategy == 'Greedy':
             self._frontier = PriorityQueue()
-            self._popfunction = pqpop
+            self._pop_function = pqpop
         else:
             self._frontier = deque()
-            self._popfunction = pop
+            self._pop_function = pop
 
     def solve(self):
         root = Node(self._problem.getInitialState(), ROOT_COST)
-        self._frontier.append(root)
+        append_node(root, self._frontier, self._frontier_hash)
 
         failed, finished = self.start_exploration()
 
         if finished:
             print("Solution Found!")
         elif failed:
+            print("Exploded: %d" % self._explosionCounter)
             print("FAILED! solution not found!")
+        return {
+            'expanded_node': self._explosionCounter,
+            'frontier_size': len(self._frontier),
+            'explored_size': len(self._explored)
+        }
 
     def start_exploration(self):
         failed = finished = False
@@ -46,8 +58,8 @@ class SearchProblemSolver():
 
     def explore_frontier(self):
         finished = False
-        current_node = self._popfunction()
-        self._explored.append(current_node)
+        current_node = self.pop_node(self._frontier, self._frontier_hash)
+        append_node(current_node, self._explored, self._explored_hash)
         if self.is_goal(current_node):
             finished = True
             print(current_node.get_solution())
@@ -55,10 +67,12 @@ class SearchProblemSolver():
         else:
             self.explode(current_node)
             self._explosionCounter += 1
+            if self._explosionCounter % 1000 == 0:
+                print("Explosion counter reached %d..." % self._explosionCounter)
         return finished
 
     def is_goal(self, node):
-        state = node.getState()
+        state = node.state
         if state is not None:
             return self._problem.isGoalState(state)
         return False
@@ -69,7 +83,7 @@ class SearchProblemSolver():
 
         for rule in self._problem.getRules():
             try:
-                new_state = rule.applyRule(node.getState())
+                new_state = rule.applyRule(node.state)
             except NotApplicableException:
                 continue
 
@@ -78,17 +92,11 @@ class SearchProblemSolver():
                 self.add_to_frontier(node, new_state, rule)
 
     def validate_node(self, node, new_state):
-        state_is_not_replicated = self.check_branch(node.getParent(), new_state)
-        no_better_option_found = self.check_frontier_and_explored(node.getCost(), new_state)
-        return state_is_not_replicated and no_better_option_found
+        state_is_replicated = self.replicated_state_in_ancestor(node.parent, new_state)
+        better_option_found = self.better_node_in_frontier_or_explored(node.cost, new_state)
+        return not state_is_replicated and not better_option_found
 
-    def add_to_frontier(self, node, new_state, rule):
-        # TODO: Ver si conviene calcular el costo en una función
-        new_node = Node(new_state, node.getCost() + rule.getCost())
-        new_node.parent = node
-        self.add_node(new_node)
-
-    def check_branch(self, parent, state):
+    def replicated_state_in_ancestor(self, parent, state):
         """
         Checks if the state of any of the ancestors is the same as the
         state of the current node.
@@ -97,71 +105,56 @@ class SearchProblemSolver():
         if parent is None:
             return False
 
-        same_state_as_an_ancestor = self.check_branch(parent, state)
+        same_state_as_an_ancestor = self.replicated_state_in_ancestor(
+            parent.parent, parent.state)
         same_state_as_parent = state is not None and state.compare(
-            parent.getState())
+            parent.state)
         return same_state_as_an_ancestor or same_state_as_parent
 
-    def check_frontier_and_explored(self, cost, state):
+    def better_node_in_frontier_or_explored(self, cost, state):
         """
         Checks that the current node doesn't have the same state as an
         explored or unexplored node that has a lower cost.
         """
-        # TODO: Ver si combiene pasar esto a un hash
-        for frontier_node in self._frontier:
-            node_state = frontier_node.getState()
-            if node_state.compare(state) and frontier_node.getCost() < cost:
-                return True
-
-        for explored_node in self._explored:
-            node_state = explored_node.getState()
-            if node_state.compare(state) and explored_node.getCost() < cost:
-                return True
-
-    def bsf(self, node):
-        self._frontier.append(node)
-
-    def dfs(self, node):
-        self._frontier.appendleft(node)
-
-    def a_star(self, node):
-        self._frontier.pqpush(evaluation(node), node)
-
-    def greedy(self, node):
-        self._frontier.pqpush(heuristic(node), node)
+        if state in self._frontier_hash and self._frontier_hash[state].cost < cost:
+            return True
+        if state in self._explored_hash and self._explored_hash[state].cost < cost:
+            return True
+        return False
 
     def add_node(self, node):
-        self._search_strategy(node)
+        self._search_strategy(node, self._frontier)
+
+    def add_to_frontier(self, node, new_state, rule):
+        # TODO: Ver si conviene calcular el costo en una función
+        new_node = Node(new_state, node.cost + rule.cost)
+        new_node.parent = node
+        self.add_node(new_node)
+        self._frontier_hash[new_node] = new_node
+
+    def pop_node(self, arr, hash_table):
+        node = self._pop_function(arr)
+        del hash_table[node]
+        return node
 
     def set_search_strategy(self, search_strategy):
         strategies = {
-            'BFS': self.bsf,
-            'DFS': self.dfs,
-            'A-star': self.a_star,
-            'Greedy': self.greedy
+            'BFS': bfs,
+            'DFS': dfs,
+            'A-star': a_star,
+            'Greedy': greedy
         }
         self._search_strategy = strategies.get(search_strategy)
 
 
-def h1(node):
-    raise NotImplementedError
+def pop(arr):
+    return arr.popleft()
 
 
-def h2(node):
-    raise NotImplementedError
+def pqpop(arr):
+    return arr.pqpop()
 
 
-# TODO asignarle la que se pase por parametro al programa, no cablearla!
-heuristic = h1
-
-
-def evaluation(node):
-    return node.cost + heuristic(node)
-
-
-def pop(self):
-    return self._frontier.popleft()
-
-
-def pqpop(self):
-    return self._frontier.pqpop()
+def append_node(node, arr, hash_table):
+    arr.append(node)
+    hash_table[node] = node
