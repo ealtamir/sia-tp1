@@ -1,5 +1,4 @@
 
-
 class CalcudokuBoard():
 
     def __init__(self, n, name, identifier):

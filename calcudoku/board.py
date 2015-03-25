@@ -1,5 +1,3 @@
-from operator import itemgetter
-from calcudoku.block import Block
 from calcudoku.exceptions.game_exceptions import InvalidBlockShapeException, \
     BlockOverlapException
 from calcudoku.utilities.constants import COL, POINTS, ROW, BLOCK_ID

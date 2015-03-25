@@ -69,6 +69,7 @@ class SearchProblemSolver():
             self._explosionCounter += 1
             if self._explosionCounter % 1000 == 0:
                 print("Explosion counter reached %d..." % self._explosionCounter)
+                print(current_node)
         return finished
 
     def is_goal(self, node):
