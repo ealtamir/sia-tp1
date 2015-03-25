@@ -9,7 +9,6 @@ ROOT_COST = 0
 
 
 class SearchProblemSolver():
-
     def __init__(self, problem, search_strategy):
         self._problem = problem
         self._search_strategy = None  # initialized in the method below
