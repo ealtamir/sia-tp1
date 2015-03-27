@@ -55,7 +55,7 @@ def create_taken_matrix(n, init_matrix=None):
 def save_results(results):
     data = '\n'.join(["%s = %s" % (key, str(val))
                       for key, val in results.iteritems()])
-    name = 'solutions/%s.txt' % results['test_name']
+    name = 'solutions/%s_%s.txt' % (results['test_name'], int(time.time()))
     with open(name, 'w') as f:
         f.write(data)
 
