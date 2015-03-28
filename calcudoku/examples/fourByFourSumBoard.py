@@ -5,6 +5,7 @@ from calcudoku.examples.calcudoku_board import CalcudokuBoard
 
 BOARD_NAME = '4v4,+'
 
+
 class FourByFourSumBoard(CalcudokuBoard):
 
     def __init__(self):
@@ -13,7 +14,7 @@ class FourByFourSumBoard(CalcudokuBoard):
         identifier = '4v4,+'
         CalcudokuBoard.__init__(self, n, name, identifier)
 
-    def buildBoard(self):
+    def build_board(self):
         board = Board(self.n)
         # http://www.conceptispuzzles.com/index.aspx?uri=puzzle/euid/010000002a6e5cbaa22408b0fa6312c6db4a88d62fc9f2953642b5523645754c48602f610e4c2ebd5db5f5de7b35b1720896f2dd/play
         blocks = (
@@ -29,6 +30,6 @@ class FourByFourSumBoard(CalcudokuBoard):
         )
 
         for block, points in blocks:
-            board.addBlock(block, points)
+            board.add_block(block, points)
 
         return board

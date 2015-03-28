@@ -9,5 +9,5 @@ class Rule():
     def __str__(self):
         raise NotImplementedError("You must define the rule name here")
 
-    def applyRule(self, state):
+    def apply_rule(self, state):
         raise NotImplementedError("You must supply this method in the subclass")

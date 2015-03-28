@@ -6,6 +6,6 @@ class CalcudokuBoard():
         self.name = name
         self.identifier = identifier
 
-    def buildBoard(self):
+    def build_board(self):
         raise NotImplementedError()
 

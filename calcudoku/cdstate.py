@@ -9,8 +9,8 @@ class CDState(State):
     """
     Abstract subclass that only enforces a compare method between states.
     """
-    def __init__(self, board, solutions=dict(),
-                 taken_rows=None, taken_cols=None, isGoal=False):
+
+    def __init__(self, board, solutions=dict(), taken_rows=None, taken_cols=None, isGoal=False):
         self.board = board
 
         # {block_id: [val1, val2, ...], ... }
@@ -48,7 +48,7 @@ class CDState(State):
 
     @solutions.setter
     def solutions(self, value):
-        assert(type(self) is type(dict()))
+        assert (type(self) is type(dict()))
         self.__solutions = value
 
     def compare(self, state):
@@ -58,7 +58,7 @@ class CDState(State):
         if len(self.solutions) != len(state.solutions):
             return False
 
-        #if self.board.haveSameSolutions(self, state):
+        # if self.board.haveSameSolutions(self, state):
         #    return True
 
         if self.__hash__() == state.__hash__():
@@ -66,11 +66,11 @@ class CDState(State):
 
         return False
 
-    def isGoal(self):
+    def is_goal(self):
         return self._isSolution
 
-    def hasSameSolutionsAs(self, state):
-        assert(self.haveSameSolutionSize(state))
+    def has_same_solutions_as(self, state):
+        assert (self.have_same_solution_size(state))
 
         for key in self.solutions.iterkeys():
             if key not in state.solutions:
@@ -86,13 +86,11 @@ class CDState(State):
     def create_next_state(self, board, block_id, solution):
         new_solutions = self.solutions.copy()
         new_solutions[block_id] = solution
-        new_taken_rows = self.refresh_row_occupied_matrix(board,
-                                                          block_id, solution)
-        new_taken_cols = self.refresh_col_occupied_matrix(board,
-                                                          block_id, solution)
+        new_taken_rows = self.refresh_row_occupied_matrix(board, block_id, solution)
+        new_taken_cols = self.refresh_col_occupied_matrix(board, block_id, solution)
         return CDState(board, new_solutions, new_taken_rows, new_taken_cols)
 
-    def haveSameSolutionSize(self, state):
+    def have_same_solution_size(self, state):
         return len(self.solutions) == len(state.solutions)
 
     def is_row_occupied(self, solution, point):
@@ -118,12 +116,12 @@ class CDState(State):
     def refresh_occupied_matrix(self, taken_rows, solution, points):
         new_matrix = create_taken_matrix(self.board.board_size, taken_rows)
         for i in range(len(solution)):
-            assert(new_matrix[solution[i] - 1][points[i]] == NOT_OCCUPIED)
+            assert (new_matrix[solution[i] - 1][points[i]] == NOT_OCCUPIED)
             # solutions are in the range (1, n) we want (0, n - 1)
             new_matrix[solution[i] - 1][points[i]] = OCCUPIED
         return new_matrix
 
-    def numberOfSolutions(self):
+    def number_of_solutions(self):
         return len(self.solutions)
 
     def already_solved(self, block_id):

@@ -23,15 +23,14 @@ class CDRule(Rule):
     def __repr__(self):
         s = "<"
         for i in range(len(self.points)):
-            s += "(%d, %d) = %d, " % (self.points[i][ROW], self.points[i][COL],
-                                      self.solution[i])
+            s += "(%d, %d) = %d, " % (self.points[i][ROW], self.points[i][COL], self.solution[i])
         s += ">"
         return s
 
-    def applyRule(self, state):
-        ruleIsApplicable = self.board.ruleIsApplicable(
+    def apply_rule(self, state):
+        rule_is_applicable = self.board.rule_is_applicable(
             state, self.block_id, self.solution)
-        if not ruleIsApplicable:
+        if not rule_is_applicable:
             raise NotApplicableException()
 
         return state.create_next_state(self.board, self.block_id, self.solution)

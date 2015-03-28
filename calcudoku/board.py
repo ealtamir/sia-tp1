@@ -13,8 +13,8 @@ class Board():
         self.board = [[ None for i in range(n)] for j in range(n)]
         self.blockNum = 0
 
-    def addBlock(self, block, points):
-        if self.pointsAreInvalid(points):
+    def add_block(self, block, points):
+        if self.points_are_invalid(points):
             msg = "All the squares in the block should be adjacent"
             raise InvalidBlockShapeException(msg)
 
@@ -27,25 +27,25 @@ class Board():
             self.board[x][y] = block
         self.blockNum += 1
 
-    def pointsAreInvalid(self, points):
+    def points_are_invalid(self, points):
         # TODO: Chequesr que todos los puntos sean adyacentes
         # raise NotImplementedError()
         return False
 
-    def solvesGame(self, state):
+    def solve_game(self, state):
         """
         Game is solved when the number of solutions matches the number
         of blocks. This works because no invalid solution will ever go
         inside the solutions data structure.
         """
-        if state.numberOfSolutions() == self.blockNum:
+        if state.number_of_solutions() == self.blockNum:
             return True
         return False
 
-    def haveSameSolutions(self, state1, state2):
-        return state1.hasSameSolutionsAs(state2)
+    def have_same_solutions(self, state1, state2):
+        return state1.has_same_solutions_as(state2)
 
-    def ruleIsApplicable(self, state, block_id, solution):
+    def rule_is_applicable(self, state, block_id, solution):
         """
         This is one of the most important functions. It checks whether the
         solution for the block of id, "block_id", is valid for the current state
@@ -87,10 +87,10 @@ class Board():
             return True
         return False
 
-    def getBlockSolutions(self):
+    def get_block_solutions(self):
         solutions = []
         for block, points in self.blocks.itervalues():
-            for move in block.getMoves():
+            for move in block.get_moves():
                 solutions.append((block.id, move, self.blocks[block.id][POINTS]))
         solutions = self.remove_useless_solutions(solutions)
         solutions = self.establish_solution_ordering(solutions)
