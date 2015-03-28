@@ -30,7 +30,7 @@ class SearchProblemSolver():
             self._pop_function = pop
 
     def solve(self):
-        root = Node(self._problem.getInitialState(), ROOT_COST)
+        root = Node(self._problem.get_initial_state(), ROOT_COST)
         append_node(root, self._frontier, self._frontier_hash)
 
         failed, finished = self.start_exploration()
@@ -75,16 +75,16 @@ class SearchProblemSolver():
     def is_goal(self, node):
         state = node.state
         if state is not None:
-            return self._problem.isGoalState(state)
+            return self._problem.is_goal_state(state)
         return False
 
     def explode(self, node):
-        if self._problem.getRules() is None:
+        if self._problem.get_rules() is None:
             raise NoRulesException()
 
-        for rule in self._problem.getRules():
+        for rule in self._problem.get_rules():
             try:
-                new_state = rule.applyRule(node.state)
+                new_state = rule.apply_rule(node.state)
             except NotApplicableException:
                 continue
 
@@ -106,10 +106,8 @@ class SearchProblemSolver():
         if parent is None:
             return False
 
-        same_state_as_an_ancestor = self.replicated_state_in_ancestor(
-            parent.parent, parent.state)
-        same_state_as_parent = state is not None and state.compare(
-            parent.state)
+        same_state_as_an_ancestor = self.replicated_state_in_ancestor(parent.parent, parent.state)
+        same_state_as_parent = state is not None and state.compare(parent.state)
         return same_state_as_an_ancestor or same_state_as_parent
 
     def better_node_in_frontier_or_explored(self, cost, state):

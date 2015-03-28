@@ -36,5 +36,3 @@ class Block():
             self.__operation = value
         else:
             raise InvalidBlockOperation()
-
-

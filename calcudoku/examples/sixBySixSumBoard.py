@@ -13,7 +13,7 @@ class SixBySixSumBoard(CalcudokuBoard):
         identifier = '6v6,+'
         CalcudokuBoard.__init__(self, 6, name, identifier)
 
-    def buildBoard(self):
+    def build_board(self):
         board = Board(self.n)
         n = 6
         # http://www.conceptispuzzles.com/index.aspx?uri=puzzle/euid/01000000bd3e55d2addc1fd16c1d0b54e4330f21f2847ae9fc0e2eb91984dc15987812acf871c6d96630c158785351b257c75bf3/play

@@ -15,23 +15,23 @@ class CDProblem(Problem):
         self.goalState = None
         self.rulesMemo = None
 
-    def getInitialState(self):
+    def get_initial_state(self):
         return CDState(self.board)
 
-    def getGoalState(self):
+    def get_goal_state(self):
         if self.goalState is None:
             self.goalState = CDState(self.board, isGoal=True)
         return self.goalState
 
-    def isGoalState(self, state):
+    def is_goal_state(self, state):
         return self.board.solve_game(state)
 
-    def getRules(self, state=None):
+    def get_rules(self, state=None):
         if self.rulesMemo is None:
             self.rulesMemo = self.init_rules()
         return self.rulesMemo
 
-    def getHValue(self, state):
+    def get_HValue(self, state):
         raise NotImplementedError()
 
     def init_rules(self):

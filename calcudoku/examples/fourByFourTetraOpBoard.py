@@ -11,7 +11,7 @@ class FourByFourQuadOpBoard(CalcudokuBoard):
         identifier = '4v4,+-*%'
         CalcudokuBoard.__init__(self, n, name, identifier)
 
-    def buildBoard(self):
+    def build_board(self):
         board = Board(self.n)
         n = self.n
         # http://www.conceptispuzzles.com/index.aspx?uri=puzzle/euid/010000005c90ba9cef752592c2821489f10a64d344d5b21e759e4fc8f0ba743bbc0cedc056ef0d7eed01882f941b20a55e2b3215/play

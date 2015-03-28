@@ -27,7 +27,7 @@ class CDRule(Rule):
         s += ">"
         return s
 
-    def applyRule(self, state):
+    def apply_rule(self, state):
         rule_is_applicable = self.board.rule_is_applicable(
             state, self.block_id, self.solution)
         if not rule_is_applicable:

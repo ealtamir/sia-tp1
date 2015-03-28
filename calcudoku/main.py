@@ -15,7 +15,7 @@ boards = {
 @timed
 def solve_problem(parameters):
     board_problem = boards[parameters['problem_board']]()
-    board = board_problem.buildBoard()
+    board = board_problem.build_board()
     problem = CDProblem(board)
     engine = SearchProblemSolver(problem, parameters['search_algo'])
     return engine.solve(), board_problem

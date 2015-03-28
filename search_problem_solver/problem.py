@@ -4,18 +4,18 @@ class Problem():
 	Abstract Problem class that defines the key elements of the
 	informed search problem solver.
 	"""
-	def getInitialState(self):
+	def get_initial_state(self):
 		raise NotImplementedError()
 
-	def getGoalState(self):
+	def get_goal_state(self):
 		raise NotImplementedError()
 
-	def isGoalState(self, state):
+	def is_goal_state(self, state):
 		raise NotImplementedError()
 
-	def getRules(self):
+	def get_rules(self):
 		raise NotImplementedError()
 
-	def getHValue(self, state):
+	def get_HValue(self, state):
 		raise NotImplementedError()
 
