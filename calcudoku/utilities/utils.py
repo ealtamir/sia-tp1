@@ -5,6 +5,7 @@ from array import array
 from calcudoku.exceptions.game_exceptions import \
     InvalidCommandLineArgumentException
 from calcudoku.utilities.constants import DEFAULT_ARRAY_TYPE
+import os
 
 
 DEFAULT_PARAMETERS = {
