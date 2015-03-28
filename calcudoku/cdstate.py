@@ -27,11 +27,16 @@ class CDState(State):
 
     def __str__(self):
         s = "State: "
+        goalBoard = [[ None for i in range(self.board.board_size)] for j in range(self.board.board_size)]
         for key in self.solutions:
             block = self.board.blocks[key]
             solution = self.solutions[key]
             s += "<%s: %s, %s> - " % (block[BLOCK], block[POINTS], str(solution))
-        return s
+            i = 0
+            for x,y in block[POINTS]:
+                goalBoard[x][y] = solution[i]
+                i += 1
+        return goalBoard
 
     def __hash__(self):
         return sum((key.__hash__() + val.__hash__()

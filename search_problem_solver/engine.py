@@ -63,7 +63,10 @@ class SearchProblemSolver():
         append_node(current_node, self._explored, self._explored_hash)
         if self.is_goal(current_node):
             finished = True
-            print(current_node.get_solution())
+            print 'Solution: '
+            solution = current_node.get_solution()
+            for i in range(len(solution)):
+                print solution[i]
             print("Expanded nodes: %d" % self._explosionCounter)
         else:
             self.explode(current_node)
