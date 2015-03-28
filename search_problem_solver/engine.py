@@ -21,6 +21,7 @@ class SearchProblemSolver():
         self._explored = []
         self._explored_hash = {}
         self._explosionCounter = 0
+
         if search_strategy == 'A-star' or search_strategy == 'Greedy':
             self._frontier = PriorityQueue()
             self._pop_function = pqpop
@@ -67,9 +68,8 @@ class SearchProblemSolver():
         else:
             self.explode(current_node)
             self._explosionCounter += 1
-            if self._explosionCounter % 1000 == 0:
-                print("Explosion counter reached %d..." % self._explosionCounter)
-                print(current_node)
+            if self._explosionCounter % 5000 == 0:
+                print("Exploded %d nodes..." % self._explosionCounter)
         return finished
 
     def is_goal(self, node):
@@ -117,9 +117,9 @@ class SearchProblemSolver():
         Checks that the current node doesn't have the same state as an
         explored or unexplored node that has a lower cost.
         """
-        if state in self._frontier_hash and self._frontier_hash[state].cost < cost:
+        if state in self._frontier_hash and self._frontier_hash[state].cost <= cost:
             return True
-        if state in self._explored_hash and self._explored_hash[state].cost < cost:
+        if state in self._explored_hash and self._explored_hash[state].cost <= cost:
             return True
         return False
 
