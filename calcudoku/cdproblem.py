@@ -24,7 +24,7 @@ class CDProblem(Problem):
         return self.goalState
 
     def isGoalState(self, state):
-        return self.board.solvesGame(state)
+        return self.board.solve_game(state)
 
     def getRules(self, state=None):
         if self.rulesMemo is None:
@@ -38,10 +38,9 @@ class CDProblem(Problem):
         rules = []
         # solution : (block_id, (move1, move2, ...),
         #  ((p1a, p1b), (p2a, ...))
-        solutions = self.board.getBlockSolutions()
+        solutions = self.board.get_block_solutions()
         for solution in solutions:
-            rule = CDRule(solution[BLOCK_ID], tuple(solution[MOVE]),
-                          solution[POINTS], self.board)
+            rule = CDRule(solution[BLOCK_ID], tuple(solution[MOVE]), solution[POINTS], self.board)
             rules.append(rule)
         print("Created %d rules" % len(rules))
         return rules

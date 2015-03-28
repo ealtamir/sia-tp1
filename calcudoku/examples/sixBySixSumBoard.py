@@ -34,7 +34,7 @@ class SixBySixSumBoard(CalcudokuBoard):
         )
 
         for block, points in blocks:
-            board.addBlock(block, points)
+            board.add_block(block, points)
 
         return board
 

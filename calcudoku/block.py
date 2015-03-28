@@ -17,11 +17,10 @@ class Block():
     def __repr__(self):
         return "%d%s" % (self.total, self.operation)
 
-    def getMoves(self):
+    def get_moves(self):
         params = (self.total, self.squares_num, self.board_size)
         if params not in Block.operationsMemo:
-            combinations = calculate_combinations(
-                self.operation, self.total, self.squares_num, self.board_size)
+            combinations = calculate_combinations(self.operation, self.total, self.squares_num, self.board_size)
             Block.operationsMemo[params] = combinations
         else:
             combinations = Block.operationsMemo[params]
