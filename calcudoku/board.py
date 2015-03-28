@@ -1,6 +1,6 @@
 from calcudoku.exceptions.game_exceptions import InvalidBlockShapeException, \
     BlockOverlapException
-from calcudoku.utilities.constants import COL, POINTS, ROW, BLOCK_ID
+from calcudoku.utilities.constants import COL, POINTS, ROW, BLOCK_ID, SOLUTION
 
 
 class Board():
@@ -56,13 +56,6 @@ class Board():
 
         block, points = self.blocks[block_id]
 
-        assert(len(points) == len(solution))
-
-        colliding_solutions = self.check_for_colliding_solutions(solution,
-                                                                 points)
-        if colliding_solutions:
-            return False
-
         unoccupied = self.check_occupancy_matrices(state, solution, points)
         return unoccupied
 
@@ -99,4 +92,51 @@ class Board():
         for block, points in self.blocks.itervalues():
             for move in block.getMoves():
                 solutions.append((block.id, move, self.blocks[block.id][POINTS]))
+        solutions = self.remove_useless_solutions(solutions)
+        solutions = self.establish_solution_ordering(solutions)
         return solutions
+
+    def remove_useless_solutions(self, solutions):
+        useful_solutions = []
+        sol_num = len(solutions)
+        for solution in solutions:
+            if len(solution[POINTS]) == 1:
+                useful_solutions.append(solution)
+            elif self.is_valid_solution(solution):
+                useful_solutions.append(solution)
+            else:
+                print("Solution discarded: %s" % str(solution))
+        new_sol_num = len(useful_solutions)
+        print("Discarded %d useless solutions." % (sol_num - new_sol_num))
+        return useful_solutions
+
+    def is_valid_solution(self, solution):
+        POINTS = 2 # The global constant is 1, in this case it should be 2
+        length = len(solution[POINTS])
+        values = ((s1, s2) for s1 in xrange(length)
+                  for s2 in xrange(length) if s1 != s2)
+        for s1, s2 in values:
+            have_same_solution_value = solution[SOLUTION][s1] == solution[SOLUTION][s2]
+            same_row = solution[POINTS][s1][ROW] == solution[POINTS][s2][ROW]
+            same_col = solution[POINTS][s1][COL] == solution[POINTS][s2][COL]
+
+            if have_same_solution_value and (same_row or same_col):
+                return False
+        return True
+
+    def establish_solution_ordering(self, solutions):
+        solutions = self.sort_by_correct_solution_probability(solutions)
+        print(solutions)
+        return solutions
+
+    def sort_by_correct_solution_probability(self, solutions):
+        probability = {}
+        for solution in solutions:
+            if solution[BLOCK_ID] in probability:
+                probability[solution[BLOCK_ID]] += 1
+            else:
+                probability[solution[BLOCK_ID]] = 1
+
+        solutions.sort(key=lambda solution: probability[solution[BLOCK_ID]])
+        return solutions
+

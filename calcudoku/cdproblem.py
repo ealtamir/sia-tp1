@@ -1,5 +1,6 @@
 from calcudoku.cdrule import CDRule
 from calcudoku.cdstate import CDState
+from calcudoku.utilities.constants import SOLUTION
 from search_problem_solver.problem import Problem
 
 BLOCK_ID = 0
@@ -42,5 +43,6 @@ class CDProblem(Problem):
             rule = CDRule(solution[BLOCK_ID], tuple(solution[MOVE]),
                           solution[POINTS], self.board)
             rules.append(rule)
+        print("Created %d rules" % len(rules))
         return rules
 
